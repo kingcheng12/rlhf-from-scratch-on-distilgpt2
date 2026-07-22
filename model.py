@@ -34,8 +34,31 @@ def set_pad_token_to_eos(tokenizer):
     
     return tokenizer
 
-# Step 4 - generate_and_decode (not yet solved)
-# TODO: implement
+# Step 4 - generate_and_decode
+def generate_and_decode(model, tokenizer, prompt, max_new_tokens=8):
+    # TODO: tokenize prompt, generate continuation greedily, decode and return as a string
+
+    # tokenize prompt
+    inputs = tokenizer(prompt, return_tensors="pt")
+
+    # move input to device of model
+    inputs = {
+        name: tensor.to(model.device)
+        for name, tensor in inputs.items()
+    }
+
+    # greedy generation; model.generate returns (batch, seq)
+    with torch.no_grad():
+        output_ids = model.generate(
+            **inputs,
+            max_new_tokens=max_new_tokens,
+            do_sample=False,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+    
+    out = tokenizer.decode(output_ids[0])
+
+    return out
 
 # Step 5 - greedy_decode (not yet solved)
 # TODO: implement
