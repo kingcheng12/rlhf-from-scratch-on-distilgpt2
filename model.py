@@ -197,8 +197,17 @@ def build_labels(input_ids):
 
     return input_ids.copy()
 
-# Step 14 - mask_prompt_labels (not yet solved)
-# TODO: implement
+# Step 14 - mask_prompt_labels
+def mask_prompt_labels(labels, prompt_length):
+    # TODO: replace the first prompt_length entries of labels with -100 and return the new list
+    if prompt_length > len(labels):
+        return [-100] * len(labels)
+
+    masked = [-100] * prompt_length
+
+    out = masked + labels[prompt_length:].copy()
+    
+    return out
 
 # Step 15 - pad_batch (not yet solved)
 # TODO: implement
