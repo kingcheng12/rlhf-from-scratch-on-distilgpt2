@@ -60,8 +60,16 @@ def generate_and_decode(model, tokenizer, prompt, max_new_tokens=8):
 
     return out
 
-# Step 5 - greedy_decode (not yet solved)
-# TODO: implement
+# Step 5 - greedy_decode
+import torch
+
+def greedy_decode(logits):
+    """Return the argmax token id from a single-row logits vector."""
+    # TODO: return the token id with the largest logit as a Python int
+
+    max_idx = torch.argmax(logits, axis = -1)
+
+    return int(max_idx.item())
 
 # Step 6 - sample_with_temperature (not yet solved)
 # TODO: implement
