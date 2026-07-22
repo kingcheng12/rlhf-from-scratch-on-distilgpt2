@@ -173,8 +173,11 @@ def format_example(example):
         f"{example['response']}"
     )
 
-# Step 11 - apply_template (not yet solved)
-# TODO: implement
+# Step 11 - apply_template
+def apply_template(examples):
+    # TODO: apply format_example to each item in examples and return the list of strings.
+    
+    return [format_example(example) for example in examples]
 
 # Step 12 - tokenize_example (not yet solved)
 # TODO: implement
