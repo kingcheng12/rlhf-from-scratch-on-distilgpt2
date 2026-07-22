@@ -113,6 +113,8 @@ def top_p_filter(logits, p):
     logits = torch.tensor(logits)
     if p >= 1:
         return logits
+    if p <= 0:
+        return torch.full_like(logits, -torch.inf)
 
     # Sort
     sorted_logits, sorted_indices = torch.sort(
