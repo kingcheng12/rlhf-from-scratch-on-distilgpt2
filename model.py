@@ -88,8 +88,23 @@ def sample_with_temperature(logits, temperature):
 
     return int(token_id.item())
 
-# Step 7 - top_k_filter (not yet solved)
-# TODO: implement
+# Step 7 - top_k_filter
+def top_k_filter(logits, k):
+    # TODO: keep the k largest entries of logits and set the rest to -inf.
+    vocab_size = logits.shape[-1]
+    if k >= vocab_size:
+        return logits
+
+    top_values, top_indices = torch.topk(logits, k=k, dim=-1)
+    
+    filtered_logits = torch.full_like(logits, -torch.inf)
+    filtered_logits.scatter_(
+        dim=-1,
+        index=top_indices,
+        src=top_values,
+    )
+
+    return filtered_logits
 
 # Step 8 - top_p_filter (not yet solved)
 # TODO: implement
