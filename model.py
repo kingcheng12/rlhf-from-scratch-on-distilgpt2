@@ -191,8 +191,11 @@ def tokenize_example(tokenizer, text, max_length=64):
 
     return inputs["input_ids"]
 
-# Step 13 - build_labels (not yet solved)
-# TODO: implement
+# Step 13 - build_labels
+def build_labels(input_ids):
+    # TODO: return a fresh list equal to input_ids to serve as next-token labels
+
+    return input_ids.copy()
 
 # Step 14 - mask_prompt_labels (not yet solved)
 # TODO: implement
