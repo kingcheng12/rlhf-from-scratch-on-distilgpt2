@@ -224,8 +224,13 @@ def pad_batch(sequences, pad_id):
     
     return out
 
-# Step 16 - make_attention_mask (not yet solved)
-# TODO: implement
+# Step 16 - make_attention_mask
+def make_attention_mask(padded_ids, pad_id):
+    # TODO: return a same-shape 0/1 mask with 1 where token != pad_id else 0
+
+    padded_ids = torch.tensor(padded_ids)
+
+    return (padded_ids != pad_id).to(torch.long).tolist()
 
 # Step 17 - collate_lm_batch (not yet solved)
 # TODO: implement
