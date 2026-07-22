@@ -106,8 +106,35 @@ def top_k_filter(logits, k):
 
     return filtered_logits
 
-# Step 8 - top_p_filter (not yet solved)
-# TODO: implement
+# Step 8 - top_p_filter
+def top_p_filter(logits, p):
+    # TODO: mask logits outside the smallest cumulative-probability nucleus of size p.
+
+    logits = torch.tensor(logits)
+    if p >= 1:
+        return logits
+
+    # Sort
+    sorted_logits, sorted_indices = torch.sort(
+        logits,
+        descending=True,
+    )
+
+    sorted_probs = torch.softmax(sorted_logits, dim=-1)
+    cumulative_probs = torch.cumsum(sorted_probs, dim=-1)
+
+    # remove tokens after cumulative probability exceeds p.
+    remove_mask = cumulative_probs > p
+
+    # retain the first token with cum prob > p
+    remove_mask[1:] = remove_mask[:-1].clone()
+    remove_mask[0] = False
+
+    filtered_logits = logits.clone()
+    indices_to_remove = sorted_indices[remove_mask]
+    filtered_logits[indices_to_remove] = -torch.inf
+
+    return filtered_logits
 
 # Step 9 - build_synthetic_instruction_dataset (not yet solved)
 # TODO: implement
