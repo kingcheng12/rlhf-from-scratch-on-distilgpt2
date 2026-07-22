@@ -71,8 +71,22 @@ def greedy_decode(logits):
 
     return int(max_idx.item())
 
-# Step 6 - sample_with_temperature (not yet solved)
-# TODO: implement
+# Step 6 - sample_with_temperature
+def sample_with_temperature(logits, temperature):
+    # TODO: rescale logits by temperature, softmax, and sample one token id
+
+    scaled_logits = logits / temperature
+    norm_logits = scaled_logits - torch.max(scaled_logits, axis = -1)[0]
+
+    exp_logits = torch.exp(norm_logits)
+    probs = exp_logits / torch.sum(exp_logits, axis = -1)
+
+    token_id = torch.multinomial(
+        probs,
+        num_samples=1,
+    )
+
+    return int(token_id.item())
 
 # Step 7 - top_k_filter (not yet solved)
 # TODO: implement
