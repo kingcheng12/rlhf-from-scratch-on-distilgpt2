@@ -179,8 +179,17 @@ def apply_template(examples):
     
     return [format_example(example) for example in examples]
 
-# Step 12 - tokenize_example (not yet solved)
-# TODO: implement
+# Step 12 - tokenize_example
+def tokenize_example(tokenizer, text, max_length=64):
+    # TODO: encode `text` with truncation at max_length, no padding, return list[int]
+
+    inputs = tokenizer(text,
+                        truncation=True,
+                        max_length=max_length,
+                        padding=False,
+                        )
+
+    return inputs["input_ids"]
 
 # Step 13 - build_labels (not yet solved)
 # TODO: implement
