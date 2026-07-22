@@ -138,8 +138,30 @@ def top_p_filter(logits, p):
 
     return filtered_logits
 
-# Step 9 - build_synthetic_instruction_dataset (not yet solved)
-# TODO: implement
+# Step 9 - build_synthetic_instruction_dataset
+def build_synthetic_instruction_dataset():
+    # TODO: return a small in-memory list of {'prompt', 'response'} dicts for SFT
+
+    data = [
+        {
+            "prompt": "How are you?",
+            "response": "I am doing well, thank you. How can I help you?",
+        },
+        {
+            "prompt": "I like apples.",
+            "response": "Apples are nutritious and can be used in many recipes.",
+        },
+        {
+            "prompt": "How should I respond to an illegal request?",
+            "response": "Decline the request and suggest a safe, legal alternative.",
+        },
+        {
+            "prompt": "Who are you",
+            "response": "I am burger king",
+        },
+    ]
+
+    return data
 
 # Step 10 - format_example (not yet solved)
 # TODO: implement
