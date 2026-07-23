@@ -232,8 +232,35 @@ def make_attention_mask(padded_ids, pad_id):
 
     return (padded_ids != pad_id).to(torch.long).tolist()
 
-# Step 17 - collate_lm_batch (not yet solved)
-# TODO: implement
+# Step 17 - collate_lm_batch
+def collate_lm_batch(batch, pad_id):
+    # TODO: pad input_ids and labels, build attention mask, return dict of LongTensors
+    
+    input_id_sequences = [example["input_ids"] for example in batch]
+    label_sequences = [example["labels"] for example in batch]
+
+    padded_input_ids = pad_batch(input_id_sequences, pad_id)
+    padded_labels = pad_batch(label_sequences, -100)
+
+    attention_mask = make_attention_mask(
+        padded_input_ids,
+        pad_id,
+    )
+
+    return {
+        "input_ids": torch.tensor(
+            padded_input_ids,
+            dtype=torch.long,
+        ),
+        "attention_mask": torch.tensor(
+            attention_mask,
+            dtype=torch.long,
+        ),
+        "labels": torch.tensor(
+            padded_labels,
+            dtype=torch.long,
+        ),
+    }
 
 # Step 18 - iterate_minibatches (not yet solved)
 # TODO: implement
