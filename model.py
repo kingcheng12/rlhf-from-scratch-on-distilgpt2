@@ -406,8 +406,33 @@ def accumulate_gradients(grad_list):
     
     return torch.stack(grad_list, dim=0).mean(dim=0)
 
-# Step 26 - sft_train_step (not yet solved)
-# TODO: implement
+# Step 26 - sft_train_step
+import torch
+
+def sft_train_step(model, batch, optimizer):
+    """Run one SFT forward/backward/step and return the loss as a float."""
+    # TODO: forward the batch, compute shifted cross-entropy loss, backprop, step optimizer
+    model.train()
+    optimizer.zero_grad()
+    
+    input_ids = batch['input_ids']
+    labels = batch['labels']
+    attention_mask = batch['attention_mask']
+
+    outputs = model(
+        input_ids=input_ids,
+        attention_mask=attention_mask,
+    )
+
+    logits = outputs.logits
+
+    shift_logits, shift_labels = shift_logits_and_labels(logits, labels)
+    loss = cross_entropy_loss(shift_logits, shift_labels)
+
+    loss.backward()
+    optimizer.step()
+
+    return loss.item()
 
 # Step 27 - evaluate_loss (not yet solved)
 # TODO: implement
