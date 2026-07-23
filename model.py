@@ -278,8 +278,25 @@ def iterate_minibatches(examples, batch_size, seed=0):
 
         yield [examples[i] for i in batch_indices]
 
-# Step 19 - train_val_split (not yet solved)
-# TODO: implement
+# Step 19 - train_val_split
+import random
+
+def train_val_split(examples, val_ratio=0.2, seed=0):
+    # TODO: deterministically split examples into (train, val) using seed and val_ratio
+    indices = list(range(len(examples)))
+
+    rng = random.Random(seed)
+    rng.shuffle(indices)
+
+    num_val = int(len(examples) * val_ratio)
+
+    val_indices = indices[:num_val]
+    train_indices = indices[num_val:]  
+
+    train_examples = [examples[i] for i in train_indices]
+    val_examples = [examples[i] for i in val_indices]
+
+    return train_examples, val_examples
 
 # Step 20 - shift_logits_and_labels (not yet solved)
 # TODO: implement
