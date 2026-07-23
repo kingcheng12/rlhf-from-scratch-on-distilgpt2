@@ -381,8 +381,21 @@ def linear_warmup_schedule(step, warmup_steps):
         return 1
     return min(1, step/warmup_steps)
 
-# Step 24 - clip_grad_norm (not yet solved)
-# TODO: implement
+# Step 24 - clip_grad_norm
+import math
+
+def clip_grad_norm(grads, max_norm):
+    # TODO: compute the global L2 norm of grads and rescale in place if it exceeds max_norm.
+    
+    l2_grads = [torch.sum(grad ** 2).item() for grad in grads]
+    l2_total = math.sqrt(sum(l2_grads))
+
+    if l2_total > max_norm:
+        scale = max_norm / l2_total
+        for grad in grads:
+            grad.mul_(scale)
+
+    return float(l2_total)
 
 # Step 25 - accumulate_gradients (not yet solved)
 # TODO: implement
