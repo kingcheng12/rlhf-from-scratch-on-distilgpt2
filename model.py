@@ -262,8 +262,21 @@ def collate_lm_batch(batch, pad_id):
         ),
     }
 
-# Step 18 - iterate_minibatches (not yet solved)
-# TODO: implement
+# Step 18 - iterate_minibatches
+import random
+
+def iterate_minibatches(examples, batch_size, seed=0):
+    # TODO: yield shuffled minibatches of size batch_size from examples (deterministic per seed).
+
+    indices = list(range(len(examples)))
+
+    rng = random.Random(seed)
+    rng.shuffle(indices)
+
+    for start in range(0, len(indices), batch_size):
+        batch_indices = indices[start:start + batch_size]
+
+        yield [examples[i] for i in batch_indices]
 
 # Step 19 - train_val_split (not yet solved)
 # TODO: implement
