@@ -654,8 +654,64 @@ def pairwise_accuracy(chosen_reward, rejected_reward):
 
     return torch.mean((chosen_reward > rejected_reward).to(torch.float32))
 
-# Step 40 - reward_train_step (not yet solved)
-# TODO: implement
+# Step 40 - reward_train_step
+import torch
+
+def reward_train_step(model, reward_head, batch, optimizer):
+    # TODO: forward chosen+rejected, score last token, compute loss/acc, step optimizer
+
+    model.train()
+    reward_head.train()
+    optimizer.zero_grad()
+
+    chosen_input_ids = batch['chosen_input_ids']
+    chosen_attention_mask = batch['chosen_attention_mask']
+    rejected_input_ids = batch['rejected_input_ids']
+    rejected_attention_mask = batch['rejected_attention_mask']
+
+    chosen_output = model(chosen_input_ids, chosen_attention_mask)
+    rejected_output = model(rejected_input_ids, rejected_attention_mask)
+
+    # Shape: (B, T, D)
+    chosen_hidden = chosen_output
+    rejected_hidden = rejected_output
+
+    # Shape: (B,)
+    chosen_last_index = chosen_attention_mask.sum(dim=1).long() - 1
+    rejected_last_index = rejected_attention_mask.sum(dim=1).long() - 1
+
+    batch_size = chosen_input_ids.shape[0]
+    batch_index = torch.arange(
+        batch_size,
+        device=chosen_input_ids.device,
+    )
+
+    # Select one token per sequence.
+    # Shape: (B, D)
+    chosen_last_hidden = chosen_hidden[
+        batch_index,
+        chosen_last_index,
+    ]
+
+    rejected_last_hidden = rejected_hidden[
+        batch_index,
+        rejected_last_index,
+    ]
+
+    chosen_reward = reward_head_forward(chosen_last_hidden,
+                                        reward_head.weight,
+                                        reward_head.bias)
+    rejected_reward = reward_head_forward(rejected_last_hidden,
+                                        reward_head.weight,
+                                        reward_head.bias)
+
+    loss = pairwise_reward_loss(chosen_reward, rejected_reward)
+    accuracy = pairwise_accuracy(chosen_reward, rejected_reward)
+
+    loss.backward()
+    optimizer.step()
+
+    return {'loss': loss.detach().item(), 'accuracy': accuracy.detach().item()}
 
 # Step 41 - sequence_logprob (not yet solved)
 # TODO: implement
