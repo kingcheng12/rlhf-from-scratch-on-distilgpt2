@@ -669,12 +669,8 @@ def reward_train_step(model, reward_head, batch, optimizer):
     rejected_input_ids = batch['rejected_input_ids']
     rejected_attention_mask = batch['rejected_attention_mask']
 
-    chosen_output = model(chosen_input_ids, chosen_attention_mask)
-    rejected_output = model(rejected_input_ids, rejected_attention_mask)
-
-    # Shape: (B, T, D)
-    chosen_hidden = chosen_output
-    rejected_hidden = rejected_output
+    chosen_hidden = model(chosen_input_ids, chosen_attention_mask)
+    rejected_hidden = model(rejected_input_ids, rejected_attention_mask)
 
     # Shape: (B,)
     chosen_last_index = chosen_attention_mask.sum(dim=1).long() - 1
