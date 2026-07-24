@@ -468,8 +468,19 @@ def lora_delta(A, B, alpha, r):
 
     return delta.to(dtype=A.dtype)
 
-# Step 29 - lora_linear_forward (not yet solved)
-# TODO: implement
+# Step 29 - lora_linear_forward
+def lora_linear_forward(x, base_weight, A, B, alpha, r, bias=None):
+    # TODO: return x @ (base_weight + lora_delta).T (+ bias) using lora_delta(A, B, alpha, r)
+    
+    delta = lora_delta(A, B, alpha, r)
+    adjust_weight = base_weight + delta
+
+    out = x @ adjust_weight.T
+
+    if bias is not None:
+        out += bias
+
+    return out
 
 # Step 30 - init_lora_weights (not yet solved)
 # TODO: implement
