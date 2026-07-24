@@ -625,8 +625,25 @@ def pairwise_reward_loss(chosen_reward, rejected_reward):
     reward_difference = chosen_reward - rejected_reward
     return -F.logsigmoid(reward_difference).mean()
 
-# Step 38 - reward_bce_loss (not yet solved)
-# TODO: implement
+# Step 38 - reward_bce_loss
+import numpy as np
+
+def reward_bce_loss(chosen_reward, rejected_reward):
+    # TODO: BCE-style reward loss with chosen as positives and rejected as negatives.
+
+    chosen_y = torch.ones(chosen_reward.shape)
+    rejected_y = torch.zeros(rejected_reward.shape)
+
+    def softplus(x):
+        x = np.asarray(x)
+        return np.logaddexp(0, x)
+
+    chosen_loss = softplus(-chosen_reward)
+    rejected_loss = softplus(rejected_reward)
+
+    loss = np.mean(np.concatenate([chosen_loss.reshape(-1), rejected_loss.reshape(-1),]))
+
+    return loss
 
 # Step 39 - pairwise_accuracy (not yet solved)
 # TODO: implement
