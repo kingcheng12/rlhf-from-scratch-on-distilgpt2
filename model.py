@@ -786,9 +786,9 @@ def clipped_surrogate(ratio, advantages, clip_eps=0.2):
     """PPO clipped surrogate loss (scalar tensor to minimize)."""
     # TODO: combine ratio and advantages via the PPO clipped objective and return a scalar loss
 
-    per_token_loss = -torch.minimum(ratio * advantages, torch.clip(ratio, 1-clip_eps, 1+clip_eps)*advantages)
+    per_token_loss = torch.minimum(ratio * advantages, torch.clip(ratio, 1-clip_eps, 1+clip_eps)*advantages)
 
-    return per_token_loss.mean()
+    return -per_token_loss.mean()
 
 # Step 47 - value_function_loss
 import torch
@@ -812,8 +812,24 @@ def entropy_bonus(logits):
 
     return entropy.mean()
 
-# Step 49 - ppo_loss (not yet solved)
-# TODO: implement
+# Step 49 - ppo_loss
+import torch
+
+def ppo_loss(ratio, advantages, values, returns, logits, clip_eps=0.2, vf_coef=0.5, ent_coef=0.01):
+    # TODO: combine clipped surrogate, value loss, and entropy bonus into the full PPO loss dict.
+
+    loss_policy = clipped_surrogate(ratio, advantages, clip_eps)
+    loss_value = value_function_loss(values, returns)
+    entropy = entropy_bonus(logits)
+
+    total_loss = loss_policy + vf_coef * loss_value - ent_coef * entropy
+
+    return {
+        "loss": total_loss,
+        "policy_loss": loss_policy,
+        "value_loss": loss_value,
+        "entropy": entropy,
+    }
 
 # Step 50 - kl_penalized_reward (not yet solved)
 # TODO: implement
