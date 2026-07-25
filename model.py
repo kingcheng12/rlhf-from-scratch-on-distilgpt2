@@ -1010,8 +1010,59 @@ def generate_completions(model, tokenizer, prompts, max_new_tokens=16):
         skip_special_tokens=True,
     )
 
-# Step 61 - score_with_reward (not yet solved)
-# TODO: implement
+# Step 61 - score_with_reward
+def score_with_reward(reward_model, tokenizer, prompt, completion):
+    """Return a scalar reward float for the prompt+completion pair."""
+    # TODO: tokenize prompt+completion, run the backbone, apply the reward head.
+    model = reward_model['model']
+    weight = reward_model['weight']
+    bias = reward_model['bias']
+
+    model.eval()
+
+    text = prompt + completion
+    encoded = tokenizer(
+        text,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+    )
+    device = next(model.parameters()).device
+
+    encoded = {
+        name: tensor.to(device)
+        for name, tensor in encoded.items()
+    }
+
+    weight = weight.to(device)
+    bias = bias.to(device)
+
+    with torch.no_grad():
+        output = model(
+            input_ids=encoded["input_ids"],
+            attention_mask=encoded["attention_mask"],
+        )
+
+        # Hugging Face model output -> tensor shaped (B, T, D)
+        hidden_states = output.last_hidden_state
+
+        last_index = encoded["attention_mask"].sum(dim=1).long() - 1
+        batch_index = torch.arange(
+            hidden_states.shape[0],
+            device=hidden_states.device,
+        )
+
+        # (B, D)
+        last_hidden = hidden_states[batch_index, last_index]
+
+        # (B,)
+        reward = reward_head_forward(
+            last_hidden,
+            weight,
+            bias,
+        )
+
+    return reward.squeeze().item()
 
 # Step 62 - win_rate (not yet solved)
 # TODO: implement
