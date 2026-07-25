@@ -840,8 +840,31 @@ def kl_penalized_reward(reward, kl, beta=0.1):
 
     return reward - beta * kl
 
-# Step 51 - batch_sequence_logprob (not yet solved)
-# TODO: implement
+# Step 51 - batch_sequence_logprob
+import torch
+import torch.nn.functional as F
+
+def batch_sequence_logprob(logits, token_ids, attention_mask=None):
+    # TODO: return a (B,) tensor of summed token log probabilities, respecting attention_mask.
+
+    # logits:         (B, T, V)
+    # token_ids:      (B, T)
+    # attention_mask: (B, T)
+
+    log_probs = logits - torch.logsumexp(logits, dim=-1, keepdim=True)
+
+    token_log_probs = torch.gather(
+        log_probs,
+        dim=-1,
+        index=token_ids.unsqueeze(-1),
+    ).squeeze(-1)
+
+    if attention_mask is not None:
+        token_log_probs = token_log_probs * attention_mask.to(
+            token_log_probs.dtype
+        )
+
+    return token_log_probs.sum(dim=-1)
 
 # Step 52 - dpo_logratios (not yet solved)
 # TODO: implement
