@@ -798,8 +798,19 @@ def value_function_loss(values, returns):
     # TODO: compute mean((values - returns) ** 2) as a scalar tensor
     return ((values - returns)**2).mean()
 
-# Step 48 - entropy_bonus (not yet solved)
-# TODO: implement
+# Step 48 - entropy_bonus
+import torch
+import torch.nn.functional as F
+
+def entropy_bonus(logits):
+    """Return mean categorical entropy of the distribution defined by `logits` over the last axis."""
+    # TODO: softmax over the vocab axis, compute -sum(p * log p), then average.
+    log_probs = F.log_softmax(logits, dim=-1)
+    probs = log_probs.exp()
+
+    entropy = -(probs * log_probs).sum(dim=-1)
+
+    return entropy.mean()
 
 # Step 49 - ppo_loss (not yet solved)
 # TODO: implement
