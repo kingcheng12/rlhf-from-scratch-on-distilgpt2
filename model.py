@@ -912,8 +912,21 @@ def ipo_loss(policy_chosen_logps, policy_rejected_logps, ref_chosen_logps, ref_r
 
     return losses.mean()
 
-# Step 56 - kto_loss (not yet solved)
-# TODO: implement
+# Step 56 - kto_loss
+import torch
+
+def kto_loss(policy_logps, ref_logps, labels, beta=0.1):
+    # TODO: implement KTO loss for unpaired desirable/undesirable examples.
+
+    rewards = beta * (policy_logps - ref_logps)
+
+    new_labels = torch.where(labels == 0, -1, 1)
+
+    adj_rewards = rewards * new_labels
+
+    losses = 1 - torch.sigmoid(adj_rewards)
+
+    return losses.mean()
 
 # Step 57 - orpo_loss (not yet solved)
 # TODO: implement
