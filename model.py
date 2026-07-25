@@ -928,8 +928,23 @@ def kto_loss(policy_logps, ref_logps, labels, beta=0.1):
 
     return losses.mean()
 
-# Step 57 - orpo_loss (not yet solved)
-# TODO: implement
+# Step 57 - orpo_loss
+def orpo_loss(policy_chosen_logps, policy_rejected_logps, sft_loss, lambda_or=0.1):
+    # TODO: return sft_loss + lambda_or * mean(-log_sigmoid(log_odds_chosen - log_odds_rejected))
+
+    def log_odds(log_probs):
+        # log(p / (1 - p)) = log(p) - log(1 - p)
+        probs = log_probs.exp()
+        return log_probs - torch.log1p(-probs)
+    
+    chosen_log_odds = log_odds(policy_chosen_logps)
+    rejected_log_odds = log_odds(policy_rejected_logps)
+
+    odds_ratio = chosen_log_odds - rejected_log_odds
+
+    preference_loss = -F.logsigmoid(odds_ratio).mean()
+
+    return sft_loss + lambda_or * preference_loss
 
 # Step 58 - simpo_loss (not yet solved)
 # TODO: implement
