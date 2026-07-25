@@ -732,8 +732,21 @@ def per_token_kl(policy_logprobs, ref_logprobs):
 
     return policy_logprobs - ref_logprobs
 
-# Step 43 - compute_returns (not yet solved)
-# TODO: implement
+# Step 43 - compute_returns
+import numpy as np
+
+def compute_returns(rewards, gamma=0.99):
+    """Return the discounted return at each timestep as a 1D numpy array."""
+    # TODO: turn a per-timestep reward sequence into discounted returns
+
+    out = []
+    future_return = 0.0
+
+    for i in range(len(rewards) - 1, -1, -1):
+        future_return = rewards[i] + gamma * future_return
+        out.append(future_return)
+
+    return np.asarray(out[::-1], dtype=np.float64)
 
 # Step 44 - gae_advantages (not yet solved)
 # TODO: implement
