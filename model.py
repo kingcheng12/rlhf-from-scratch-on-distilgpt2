@@ -790,8 +790,13 @@ def clipped_surrogate(ratio, advantages, clip_eps=0.2):
 
     return per_token_loss.mean()
 
-# Step 47 - value_function_loss (not yet solved)
-# TODO: implement
+# Step 47 - value_function_loss
+import torch
+
+def value_function_loss(values, returns):
+    """Mean squared error between predicted values and target returns."""
+    # TODO: compute mean((values - returns) ** 2) as a scalar tensor
+    return ((values - returns)**2).mean()
 
 # Step 48 - entropy_bonus (not yet solved)
 # TODO: implement
