@@ -709,8 +709,19 @@ def reward_train_step(model, reward_head, batch, optimizer):
 
     return {'loss': loss.detach().item(), 'accuracy': accuracy.detach().item()}
 
-# Step 41 - sequence_logprob (not yet solved)
-# TODO: implement
+# Step 41 - sequence_logprob
+import torch
+import torch.nn.functional as F
+
+def sequence_logprob(logits, token_ids):
+    """Sum log probabilities of the selected tokens along the sequence dimension."""
+    # TODO: return a scalar tensor equal to sum_t log_softmax(logits)[t, token_ids[t]]
+    log_probs = logits - torch.logsumexp(logits, dim=-1, keepdim=True)
+
+    # log_probs: seq_len, vocab_len
+    seq_log_probs = log_probs[torch.arange(log_probs.shape[0], device=log_probs.device), token_ids].sum()
+
+    return seq_log_probs
 
 # Step 42 - per_token_kl (not yet solved)
 # TODO: implement
