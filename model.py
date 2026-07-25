@@ -1140,8 +1140,25 @@ def stream_tokens(model, tokenizer, prompt, max_new_tokens):
             ):
                 break
 
-# Step 64 - apply_stop_tokens (not yet solved)
-# TODO: implement
+# Step 64 - apply_stop_tokens
+def apply_stop_tokens(text, stop_tokens, eos_token):
+    # TODO: truncate text at the earliest occurrence of any stop token or the eos token
+    stops = list(stop_tokens)
+
+    if eos_token is not None:
+        stops.append(eos_token)
+    
+    stop_positions = [
+        text.find(stop)
+        for stop in stops
+        if stop and text.find(stop) != -1
+    ]
+
+    if not stop_positions:
+        return text
+        
+    earliest_stop = min(stop_positions)
+    return text[:earliest_stop]
 
 # Step 65 - chat (not yet solved)
 # TODO: implement
