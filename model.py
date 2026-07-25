@@ -1076,8 +1076,69 @@ def win_rate(reward_model, tokenizer, prompts, completions_a, completions_b):
 
     return sum([ra>rb for ra, rb in zip(reward_a, reward_b)])/len(reward_a) + sum([ra==rb for ra, rb in zip(reward_a, reward_b)])/(2*len(reward_a))
 
-# Step 63 - stream_tokens (not yet solved)
-# TODO: implement
+# Step 63 - stream_tokens
+def stream_tokens(model, tokenizer, prompt, max_new_tokens):
+    # TODO: yield one decoded text piece per greedy-decoded new token, up to max_new_tokens.
+    model.eval()
+
+    encoded = tokenizer(
+        prompt,
+        return_tensors="pt",
+        padding=False,
+        truncation=True,
+    )
+    device = next(model.parameters()).device
+
+    encoded = {
+        name: tensor.to(device)
+        for name, tensor in encoded.items()
+    }
+
+    input_ids = encoded["input_ids"].to(device)
+    attention_mask = encoded["attention_mask"].to(device)
+
+    eos_token_id = tokenizer.eos_token_id
+
+    with torch.no_grad():
+        for _ in range(max_new_tokens):
+            outputs = model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+            )
+
+            # Shape: (B, T, V)
+            logits = outputs.logits
+
+            # Greedy selection from the final position.
+            next_token_id = logits[:, -1, :].argmax(dim=-1, keepdim=True)
+
+            yield tokenizer.decode(
+                next_token_id[0],
+                skip_special_tokens=True,
+            )
+
+            input_ids = torch.cat(
+                [input_ids, next_token_id],
+                dim=1,
+            )
+
+            attention_mask = torch.cat(
+                [
+                    attention_mask,
+                    torch.ones(
+                        (attention_mask.shape[0], 1),
+                        dtype=attention_mask.dtype,
+                        device=device,
+                    ),
+                ],
+                dim=1,
+            )
+
+            if (
+                eos_token_id is not None
+                and next_token_id.item() == eos_token_id
+            ):
+                break
 
 # Step 64 - apply_stop_tokens (not yet solved)
 # TODO: implement
