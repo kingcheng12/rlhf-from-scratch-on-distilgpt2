@@ -963,8 +963,17 @@ def simpo_loss(policy_chosen_logps, policy_rejected_logps, chosen_lengths, rejec
 
     return losses.mean()
 
-# Step 59 - build_eval_prompt_set (not yet solved)
-# TODO: implement
+# Step 59 - build_eval_prompt_set
+def build_eval_prompt_set():
+    # TODO: return a held-out list of at least 4 short instruction-style eval prompts
+    return [
+        "Summarize the benefits of regular exercise.",
+        "Explain why the sky appears blue.",
+        "Write a polite email requesting a meeting.",
+        "List three ways to reduce household energy use.",
+        "Describe the difference between supervised and unsupervised learning.",
+        "Give step-by-step instructions for making tea.",
+    ]
 
 # Step 60 - generate_completions (not yet solved)
 # TODO: implement
