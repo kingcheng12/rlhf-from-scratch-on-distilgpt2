@@ -897,8 +897,20 @@ def dpo_loss(policy_chosen_logps, policy_rejected_logps, ref_chosen_logps, ref_r
 
     return loss
 
-# Step 55 - ipo_loss (not yet solved)
-# TODO: implement
+# Step 55 - ipo_loss
+import torch
+
+def ipo_loss(policy_chosen_logps, policy_rejected_logps, ref_chosen_logps, ref_rejected_logps, beta=0.1):
+    # TODO: regress (policy_logratios - ref_logratios) toward the IPO target 1/(2*beta)
+
+    ref_logratio = dpo_ref_logratios(ref_chosen_logps, ref_rejected_logps)
+    policy_logratio = dpo_logratios(policy_chosen_logps, policy_rejected_logps)
+
+    reward_gap = policy_logratio - ref_logratio
+
+    losses = (reward_gap-1/(2*beta))**2
+
+    return losses.mean()
 
 # Step 56 - kto_loss (not yet solved)
 # TODO: implement
