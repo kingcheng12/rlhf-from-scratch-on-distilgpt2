@@ -748,8 +748,27 @@ def compute_returns(rewards, gamma=0.99):
 
     return np.asarray(out[::-1], dtype=np.float64)
 
-# Step 44 - gae_advantages (not yet solved)
-# TODO: implement
+# Step 44 - gae_advantages
+def gae_advantages(rewards, values, gamma=0.99, lam=0.95):
+    # TODO: compute GAE advantages of shape (T,) from rewards (T,) and values (T+1,)
+
+    advantages = torch.zeros(rewards.shape)
+    T = len(rewards)
+
+
+    for t in range(T-1, -1, -1):
+        # delta = reward + gamma * Vt+1 - Vt
+        V_t1 = values[t+1]
+        V_t = values[t]
+        r_t = rewards[t]
+
+        delta_t = r_t + gamma * V_t1 - V_t
+
+        # At = delta + gamma * lam * At+1
+        At = delta_t + gamma * lam * (advantages[t+1] if t+1<T else 0)
+        advantages[t] = At
+    
+    return advantages
 
 # Step 45 - policy_ratio (not yet solved)
 # TODO: implement
