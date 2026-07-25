@@ -882,8 +882,20 @@ def dpo_ref_logratios(ref_chosen_logps, ref_rejected_logps):
     
     return ref_chosen_logps - ref_rejected_logps
 
-# Step 54 - dpo_loss (not yet solved)
-# TODO: implement
+# Step 54 - dpo_loss
+import torch
+import torch.nn.functional as F
+
+def dpo_loss(policy_chosen_logps, policy_rejected_logps, ref_chosen_logps, ref_rejected_logps, beta=0.1):
+    """Return the DPO loss as a scalar torch tensor."""
+    # TODO: combine policy and reference log-ratios into the DPO log-sigmoid loss
+    
+    ref_logratio = dpo_ref_logratios(ref_chosen_logps, ref_rejected_logps)
+    policy_logratio = dpo_logratios(policy_chosen_logps, policy_rejected_logps)
+
+    loss = -F.logsigmoid(beta * (policy_logratio - ref_logratio)).mean()
+
+    return loss
 
 # Step 55 - ipo_loss (not yet solved)
 # TODO: implement
