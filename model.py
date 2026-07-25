@@ -779,8 +779,16 @@ def policy_ratio(new_logprobs, old_logprobs):
     
     return torch.exp(new_logprobs - old_logprobs)
 
-# Step 46 - clipped_surrogate (not yet solved)
-# TODO: implement
+# Step 46 - clipped_surrogate
+import torch
+
+def clipped_surrogate(ratio, advantages, clip_eps=0.2):
+    """PPO clipped surrogate loss (scalar tensor to minimize)."""
+    # TODO: combine ratio and advantages via the PPO clipped objective and return a scalar loss
+
+    per_token_loss = -torch.minimum(ratio * advantages, torch.clip(ratio, 1-clip_eps, 1+clip_eps)*advantages)
+
+    return per_token_loss.mean()
 
 # Step 47 - value_function_loss (not yet solved)
 # TODO: implement
