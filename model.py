@@ -874,8 +874,13 @@ def dpo_logratios(policy_chosen_logps, policy_rejected_logps):
     # TODO: compute the policy log-ratio used inside the DPO objective
     return policy_chosen_logps - policy_rejected_logps
 
-# Step 53 - dpo_ref_logratios (not yet solved)
-# TODO: implement
+# Step 53 - dpo_ref_logratios
+import torch
+
+def dpo_ref_logratios(ref_chosen_logps, ref_rejected_logps):
+    # TODO: return per-example chosen minus rejected reference log probabilities
+    
+    return ref_chosen_logps - ref_rejected_logps
 
 # Step 54 - dpo_loss (not yet solved)
 # TODO: implement
