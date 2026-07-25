@@ -723,8 +723,14 @@ def sequence_logprob(logits, token_ids):
 
     return seq_log_probs
 
-# Step 42 - per_token_kl (not yet solved)
-# TODO: implement
+# Step 42 - per_token_kl
+import numpy as np
+
+def per_token_kl(policy_logprobs, ref_logprobs):
+    """Per-token KL estimate between policy and reference log-probs."""
+    # TODO: return the per-token KL contribution used in the PPO penalty
+
+    return policy_logprobs - ref_logprobs
 
 # Step 43 - compute_returns (not yet solved)
 # TODO: implement
