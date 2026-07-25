@@ -37,6 +37,7 @@ def set_pad_token_to_eos(tokenizer):
 # Step 4 - generate_and_decode
 def generate_and_decode(model, tokenizer, prompt, max_new_tokens=8):
     # TODO: tokenize prompt, generate continuation greedily, decode and return as a string
+    model.eval()
 
     # tokenize prompt
     inputs = tokenizer(prompt, return_tensors="pt")
