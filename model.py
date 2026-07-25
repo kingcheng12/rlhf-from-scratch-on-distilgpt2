@@ -975,8 +975,40 @@ def build_eval_prompt_set():
         "Give step-by-step instructions for making tea.",
     ]
 
-# Step 60 - generate_completions (not yet solved)
-# TODO: implement
+# Step 60 - generate_completions
+def generate_completions(model, tokenizer, prompts, max_new_tokens=16):
+    """Return a list of greedy completions, one per prompt."""
+    # TODO: produce one decoded completion per prompt, preserving input order
+    if len(prompts) == 0:
+        return []
+
+    model.eval()
+
+    encoded = tokenizer(
+        prompts,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+    )
+    device = next(model.parameters()).device
+
+    encoded = {
+        name: tensor.to(device)
+        for name, tensor in encoded.items()
+    }
+
+    with torch.no_grad():
+        generated_ids = model.generate(
+            **encoded,
+            max_new_tokens=max_new_tokens,
+            do_sample=False,
+            pad_token_id=tokenizer.pad_token_id,
+        )
+
+    return tokenizer.batch_decode(
+        generated_ids,
+        skip_special_tokens=True,
+    )
 
 # Step 61 - score_with_reward (not yet solved)
 # TODO: implement
