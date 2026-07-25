@@ -946,8 +946,22 @@ def orpo_loss(policy_chosen_logps, policy_rejected_logps, sft_loss, lambda_or=0.
 
     return sft_loss + lambda_or * preference_loss
 
-# Step 58 - simpo_loss (not yet solved)
-# TODO: implement
+# Step 58 - simpo_loss
+import torch
+import torch.nn.functional as F
+
+def simpo_loss(policy_chosen_logps, policy_rejected_logps, chosen_lengths, rejected_lengths, beta=2.0, gamma=1.0):
+    """Return the mean SimPO loss as a scalar tensor."""
+    # TODO: form length-normalized implicit rewards and apply the beta/gamma margin loss
+
+    chosen_r = policy_chosen_logps / chosen_lengths
+    rejected_r = policy_rejected_logps / rejected_lengths
+
+    gap = chosen_r - rejected_r
+
+    losses = -F.logsigmoid(beta * gap - gamma)
+
+    return losses.mean()
 
 # Step 59 - build_eval_prompt_set (not yet solved)
 # TODO: implement
